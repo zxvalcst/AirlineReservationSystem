@@ -1,0 +1,18 @@
+[
+  {
+    "action": "MAKE_PAYMENT",
+    "data": {
+      "bookingId": "B-1001",
+      "passenger": "Budi",
+      "amount": 1500000,
+      "paymentMethod": "CreditCard"
+    }
+  },
+  {
+    "action": "CANCEL_TICKET",
+    "data": {
+      "bookingId": "B-1001",
+      "reason": "Sakit"
+    }
+  }
+]
