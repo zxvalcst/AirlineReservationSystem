@@ -51,15 +51,32 @@ def callback(ch, method, properties, body):
     # 1. Menangani Booking Baru
     if routing_key == "booking.submit":
         print(f" [BookingService] Menerima pesanan baru: {data['bookingId']}")
-        # Validasi sederhana
+        
+        # --- VALIDASI INPUT ---
         if data['amount'] > 0:
             print("   -> Validasi Internal OK. Meneruskan ke PaymentService...")
             update_db(data['bookingId'], "Pending Payment")
             
-            # E1 Output: Kirim ke Payment Service
+            # E1 Output: Kirim ke Payment Service (Jalur Sukses)
             channel.basic_publish(exchange='payment_exchange', routing_key='payment.process', body=body)
+        
         else:
+            # --- JIKA VALIDASI GAGAL (Amount 0 atau negatif) ---
             print("   -> Validasi Gagal: Amount invalid.")
+            update_db(data['bookingId'], "Validation Failed")
+            
+            # Kirim Event Kegagalan ke Status Exchange (agar didengar Notification Service)
+            failure_data = {
+                "bookingId": data['bookingId'],
+                "status": "Validation Failed",
+                "reason": "Jumlah pembayaran tidak valid (0 atau negatif)"
+            }
+            channel.basic_publish(
+                exchange='status_exchange', 
+                routing_key='', 
+                body=json.dumps(failure_data)
+            )
+            print("   -> [x] Mengirim event 'Validation Failed' ke Notification Service")
 
     # 2. Menangani Request Cancel (Simulasi Admin Approval disini)
     elif routing_key == "booking.cancel_request":

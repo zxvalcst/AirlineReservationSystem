@@ -18,11 +18,19 @@ def callback(ch, method, properties, body):
     print(f" [Notification] Menerima event update untuk {booking_id} -> {status}")
 
     if status == "Confirmed":
-        print(f"   >>> Mengirim E-TICKET dan SMS Sukses ke user untuk {booking_id}")
+        print(f"   >>> 📧 EMAIL: E-TICKET Terkirim & SMS Sukses ke user untuk {booking_id}")
+    
     elif status == "Payment Failed":
-        print(f"   >>> Mengirim Alert GAGAL BAYAR ke user untuk {booking_id}")
+        print(f"   >>> ⚠️ ALERT: Pembayaran GAGAL untuk {booking_id}. Saldo tidak cukup/ditolak Bank.")
+    
     elif status == "Refunded":
-        print(f"   >>> Mengirim Email Konfirmasi Refund ke user untuk {booking_id}")
+        print(f"   >>> 📧 EMAIL: Konfirmasi Refund berhasil untuk {booking_id}")
+
+    # --- TAMBAHAN BARU UNTUK VALIDASI ---
+    elif status == "Validation Failed":
+        reason = data.get('reason', 'Data tidak valid')
+        print(f"   >>> ❌ ERROR: Booking Ditolak Sistem! ID: {booking_id}")
+        print(f"       Pesan ke User: 'Mohon maaf, {reason}. Silakan ulangi pemesanan.'")
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
 

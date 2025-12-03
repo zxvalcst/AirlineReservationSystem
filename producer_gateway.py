@@ -151,7 +151,7 @@ def menu_main():
             input("Tekan Enter untuk kembali...")
 
         elif choice == '3':
-            print("\nTerima kasih telah menggunakan sistem ini. Bye!")
+            print("\nTerima kasih telah menggunakan sistem ini. Sampai jumpa lagi!")
             sys.exit()
 
 if __name__ == "__main__":
