@@ -1,0 +1,10 @@
+[
+    {
+        "bookingId": "B-1001",
+        "status": "Confirmed"
+    },
+    {
+        "bookingId": "B-1002",
+        "status": "Refunded"
+    }
+]
