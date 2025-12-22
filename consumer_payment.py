@@ -2,7 +2,17 @@ import pika
 import json
 import time
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+# --- KONFIGURASI KONEKSI BARU ---
+RABBIT_HOST = 'localhost'  # <--- GANTI DENGAN IP LAPTOP A
+RABBIT_USER = 'admin'         # User yang baru dibuat tadi
+RABBIT_PASS = 'admin'         # Password yang baru dibuat tadi
+
+credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
+parameters = pika.ConnectionParameters(host=RABBIT_HOST, 
+                                       port=5672, 
+                                       credentials=credentials)
+
+connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 
 # Declare Exchanges
@@ -22,7 +32,7 @@ def callback(ch, method, properties, body):
         print(f" [PaymentService] Memproses pembayaran untuk {data['bookingId']}...")
         time.sleep(1) # Simulasi Bank delay
         
-        # Simulasi Bank Logic (Sukses jika amount < 2juta, contoh saja)
+        # Simulasi Bank Logic (Sukses jika amount < 2juta, contoh saja -> menggantikan fraud check/sufficient amounts check)
         if data['amount'] < 2000000:
             status = "Confirmed" # E2: Payment Successful
             print("   -> Bank: Payment Approved.")
